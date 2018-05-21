@@ -1,8 +1,11 @@
-﻿namespace OhioBox.Storage.MySql.Tests.Mapping
+﻿using System;
+
+namespace OhioBox.Storage.MySql.Tests.Mapping
 {
-    public class UserDto
-    {
-        public long Id { get; set; }
-        public string Name { get; set; }
-    }
+	public class UserDto
+	{
+		public long Id { get; set; }
+		public string Name { get; set; }
+		public DateTime? UpdateDate { get; set; }
+	}
 }
