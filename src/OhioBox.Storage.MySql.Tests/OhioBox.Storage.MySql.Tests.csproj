@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFramework>net47</TargetFramework>
+		<PackageId>OhioBox.Storage.MySql.Tests</PackageId>
+	</PropertyGroup>
+	<PropertyGroup>
+		<StartupObject />
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System" />
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Data" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+		<PackageReference Include="NUnitTestAdapter" Version="2.1.1" />
+		<PackageReference Include="nunit" Version="2.6.3" />
+		<PackageReference Include="OhioBox.Moranbernate" Version="2.0.5" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\OhioBox.Storage.MySql\OhioBox.Storage.MySql.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="conf.ConnectionStrings.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>

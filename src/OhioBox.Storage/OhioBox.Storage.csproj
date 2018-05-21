@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard1.4</TargetFrameworks>
+    <PackageId>OhioBox.Storage</PackageId>
+    <BuildNumber>0</BuildNumber>
+    <PackageVersionSuffix>-dev</PackageVersionSuffix>
+    <AssemblyVersion>2.0.$(BuildNumber)</AssemblyVersion>
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <PackageVersion>$(AssemblyVersion)$(PackageVersionSuffix)</PackageVersion>
+    <Authors>Sears Israel</Authors>
+    <Description>IStorage abstraction for running queries agains data sources</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright>Copyright © 2017 SHC Israel. All rights reserved.</Copyright>
+    <PackageTags>ORM DB Database MySQL</PackageTags>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.4'">
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="System.Runtime" Version="4.3.0" />
+  </ItemGroup>
+</Project>

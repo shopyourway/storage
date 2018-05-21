@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OhioBox.Storage", "OhioBox.Storage\OhioBox.Storage.csproj", "{EBA5AA07-663E-4E6D-A57B-F4804111FF9A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C169B047-5131-4885-B6CD-BA2CB95995B0}"
+	ProjectSection(SolutionItems) = preProject
+		NuGet.config = NuGet.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OhioBox.Storage.MySql", "OhioBox.Storage.MySql\OhioBox.Storage.MySql.csproj", "{ADF4A9C4-57EC-46BC-A69E-5436255DF2ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OhioBox.Storage.MySql.Tests", "OhioBox.Storage.MySql.Tests\OhioBox.Storage.MySql.Tests.csproj", "{33572EF5-12BC-4B11-8E84-067DAAAD6782}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EBA5AA07-663E-4E6D-A57B-F4804111FF9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBA5AA07-663E-4E6D-A57B-F4804111FF9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBA5AA07-663E-4E6D-A57B-F4804111FF9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBA5AA07-663E-4E6D-A57B-F4804111FF9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADF4A9C4-57EC-46BC-A69E-5436255DF2ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADF4A9C4-57EC-46BC-A69E-5436255DF2ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADF4A9C4-57EC-46BC-A69E-5436255DF2ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADF4A9C4-57EC-46BC-A69E-5436255DF2ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33572EF5-12BC-4B11-8E84-067DAAAD6782}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33572EF5-12BC-4B11-8E84-067DAAAD6782}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33572EF5-12BC-4B11-8E84-067DAAAD6782}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33572EF5-12BC-4B11-8E84-067DAAAD6782}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
