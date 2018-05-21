@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Moranbernate.Mapping;
-using Moranbernate.Querying;
-using Moranbernate.Querying.Restrictions;
-using Querying = Moranbernate.Querying;
+using OhioBox.Moranbernate.Mapping;
+using OhioBox.Moranbernate.Querying;
+using OhioBox.Moranbernate.Querying.Restrictions;
+using Querying = OhioBox.Moranbernate.Querying;
 
 namespace OhioBox.Storage.MySql.Moranbernate
 {
@@ -88,13 +88,13 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return this;
 		}
 
-		public IQueryBuilder<T> StartWith(Expression<Func<T, string>> member, string value)
+		public IQueryBuilder<T> StartWith(Expression<Func<T, object>> member, string value)
 		{
 			AddPredicate(w => w.StartWith(member, value));
 			return this;
 		}
 
-		public IQueryBuilder<T> Contains(Expression<Func<T, string>> member, string value)
+		public IQueryBuilder<T> Contains(Expression<Func<T, object>> member, string value)
 		{
 			AddPredicate(w => w.Contains(member, value));
 			return this;

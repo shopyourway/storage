@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using Moranbernate.Mapping;
+using OhioBox.Moranbernate.Mapping;
 
 namespace OhioBox.Storage.MySql.Moranbernate
 {
