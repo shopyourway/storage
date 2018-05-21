@@ -53,6 +53,37 @@ namespace OhioBox.Storage.MySql.Tests
 			Assert.That(result, Has.Some.Matches<UserDto>(u => u.Id == 2L && u.Name == "Shani"));
 		}
 
+		[Test]
+		public void Query_WhenQueryWithStartsWith_ReturnAllUsersStartingWithGivenPrefix()
+		{
+			AddUser(1L, "Doron");
+			AddUser(2L, "Shani");
+			AddUser(3L, "Dror");
+			AddUser(4L, "Danni");
+
+			var result = _target.Query(q => q.StartWith(x => x.Name, "D"));
+
+			Assert.That(result, Has.Count.EqualTo(3));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron"));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "Dror"));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 4L && x.Name == "Danni"));
+		}
+		
+		[Test]
+		public void Query_WhenQueryWithContains_ReturnAllUsersWithNameContainingGivenString()
+		{
+			AddUser(1L, "Doron");
+			AddUser(2L, "Shani");
+			AddUser(3L, "Dror");
+			AddUser(4L, "Danni");
+
+			var result = _target.Query(q => q.Contains(x => x.Name, "a"));
+
+			Assert.That(result, Has.Count.EqualTo(2));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "Shani"));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 4L && x.Name == "Danni"));
+		}
+
 		private void AddUser(long id, string name)
 		{
 			_target.Add(new UserDto { Id = id, Name = name });
