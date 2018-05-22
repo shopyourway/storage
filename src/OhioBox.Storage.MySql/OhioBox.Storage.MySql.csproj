@@ -1,32 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net47;netstandard1.6</TargetFrameworks>
-    <PackageId>OhioBox.Storage.MySql</PackageId>
-    <BuildNumber>0</BuildNumber>
-    <PackageVersionSuffix>-dev</PackageVersionSuffix>
-    <AssemblyVersion>2.2.$(BuildNumber)</AssemblyVersion>
-    <FileVersion>$(AssemblyVersion)</FileVersion>
-    <PackageVersion>$(AssemblyVersion)$(PackageVersionSuffix)</PackageVersion>
-    <Authors>Sears Israel</Authors>
-    <Description>OhioBox.Storage integration with Moranbernate ORM</Description>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <RepositoryUrl></RepositoryUrl>
-    <Copyright>Copyright © 2017 SHC Israel. All rights reserved.</Copyright>
-    <PackageTags>ORM DB Database MySQL</PackageTags>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net47'">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <PackageReference Include="MySql.Data" Version="6.10.6" />
-    <PackageReference Include="OhioBox.Storage" Version="2.0.7" />
-    <PackageReference Include="OhioBox.Moranbernate" Version="2.0.5" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.6'">
-    <PackageReference Include="System.Collections" Version="4.3.0" />
-    <PackageReference Include="System.Runtime" Version="4.3.0" />
-    <PackageReference Include="MySql.Data" Version="6.10.6" />
-    <PackageReference Include="OhioBox.Storage" Version="2.0.7" />
-    <PackageReference Include="OhioBox.Moranbernate" Version="2.0.5" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net47;netstandard1.6</TargetFrameworks>
+		<PackageId>OhioBox.Storage.MySql</PackageId>
+		<BuildNumber>0</BuildNumber>
+		<PackageVersionSuffix>-dev</PackageVersionSuffix>
+		<AssemblyVersion>2.2.$(BuildNumber)</AssemblyVersion>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<PackageVersion>$(AssemblyVersion)$(PackageVersionSuffix)</PackageVersion>
+		<Authors>Sears Israel</Authors>
+		<Description>OhioBox.Storage integration with Moranbernate ORM</Description>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<RepositoryUrl></RepositoryUrl>
+		<Copyright>Copyright © 2017 SHC Israel. All rights reserved.</Copyright>
+		<PackageTags>ORM DB Database MySQL CRUD</PackageTags>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net47'">
+		<Reference Include="System" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Data" />
+		<PackageReference Include="MySql.Data" Version="6.10.6" />
+		<PackageReference Include="OhioBox.Moranbernate" Version="5.0.14" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.6'">
+		<PackageReference Include="System.Collections" Version="4.3.0" />
+		<PackageReference Include="System.Runtime" Version="4.3.0" />
+		<PackageReference Include="MySql.Data" Version="6.10.6" />
+		<PackageReference Include="OhioBox.Moranbernate" Version="5.0.14" />
+	</ItemGroup>
+	<!--<ItemGroup Condition="'$(Configuration)' == 'Debug'">-->
+	<ItemGroup>
+		<ProjectReference Include="..\OhioBox.Storage\OhioBox.Storage.csproj" />
+	</ItemGroup>
+	<!--<ItemGroup Condition="'$(Configuration)' != 'Debug'">
+		<PackageReference Include="OhioBox.Storage" Version="2.0.7" />
+	</ItemGroup>-->
 </Project>

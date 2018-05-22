@@ -1,4 +1,4 @@
-﻿using Moranbernate.Mapping;
+﻿using OhioBox.Moranbernate.Mapping;
 
 namespace OhioBox.Storage.MySql.Tests.Mapping
 {

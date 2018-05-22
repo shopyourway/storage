@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using Moranbernate.Querying;
-using Moranbernate.Utils;
+using OhioBox.Moranbernate.Querying;
+using OhioBox.Moranbernate.Utils;
 
 namespace OhioBox.Storage.MySql.Moranbernate
 {
@@ -126,7 +126,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return QueryInternal(q => q.Where(w => w.In(selector, ids)), "GetByField", () => " by field: " + ExpressionProcessor.FindMemberExpression(selector.Body) + " with " + ids.Count + " parameters");
 		}
 
-		private List<T> QueryInternal(Action<global::Moranbernate.Querying.IQueryBuilder<T>> action, string metricsKey, Func<string> logMessage)
+		private List<T> QueryInternal(Action<global::OhioBox.Moranbernate.Querying.IQueryBuilder<T>> action, string metricsKey, Func<string> logMessage)
 		{
 			var sw = Stopwatch.StartNew();
 			var rows = 0;
