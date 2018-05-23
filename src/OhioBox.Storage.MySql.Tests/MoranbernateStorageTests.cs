@@ -84,9 +84,43 @@ namespace OhioBox.Storage.MySql.Tests
 			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 4L && x.Name == "Danni"));
 		}
 
-		private void AddUser(long id, string name)
+		[Test]
+		public void UpdateByQuery_WhenCalled_UpdatesOnlyRelevantRows()
 		{
-			_target.Add(new UserDto { Id = id, Name = name });
+			AddUser(1L, "Doron");
+			AddUser(2L, "Shani");
+			AddUser(3L, "Dror");
+
+			var result = _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST"));
+
+			Assert.That(result, Is.EqualTo(2));
+
+			var users = _target.Query(q => {});
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron"));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "TEST"));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST"));
+		}
+
+		[Test]
+		public void UpdateByQuery_WhenUpdatingSeveralFields_UpdatesAllFieldsInRelevantRows()
+		{
+			AddUser(1L, "Doron", new DateTime(2018, 5, 10));
+			AddUser(2L, "Shani", new DateTime(2018, 5, 11));
+			AddUser(3L, "Dror", new DateTime(2018, 5, 12));
+
+			var result = _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST").Set(x => x.UpdateDate, new DateTime(2018, 5, 21)));
+
+			Assert.That(result, Is.EqualTo(2));
+
+			var users = _target.Query(q => { });
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.UpdateDate == new DateTime(2018, 5, 10)));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "TEST" && x.UpdateDate == new DateTime(2018, 5, 21)));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.UpdateDate == new DateTime(2018, 5, 21)));
+		}
+
+		private void AddUser(long id, string name, DateTime? updateDate = null)
+		{
+			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate});
 		}
 
 		private class DummyLogger : IPerfLogger<UserDto>

@@ -16,6 +16,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		private readonly IMetricsReporter _metricsReporter;
 
 		private readonly string _space = $"Storage.Moranbernate.{typeof(T).Name}";
+		private const int QueryRuntimeThreshold = 1000;
 
 
 		public MoranbernateStorage(ISqlConnectionFactory connectionFactory, 
@@ -126,6 +127,31 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return QueryInternal(q => q.Where(w => w.In(selector, ids)), "GetByField", () => " by field: " + ExpressionProcessor.FindMemberExpression(selector.Body) + " with " + ids.Count + " parameters");
 		}
 
+		public int UpdateByQuery(Action<IQueryBuilder<T>> query, Action<IUpdateBuilder<T>> update)
+		{
+			var sw = Stopwatch.StartNew();
+			var rows = 0;
+
+			try
+			{
+				using (var conn = _connectionProvider.GetOpenConnection())
+				{
+					rows = conn.UpdateByQuery<T>(
+						builder => update(new MoranbernateUpdateBuilder<T>(builder)), 
+						restrictable => query(new MoranbernateRestrictions<T>(restrictable)));
+
+					return rows;
+				}
+			}
+			finally
+			{
+				sw.Stop();
+				_metricsReporter.Report($"{_space}.UpdateByQuery", sw.Elapsed.Ticks);
+				if (sw.ElapsedMilliseconds > QueryRuntimeThreshold)
+					LogSlowQuery(sw.ElapsedMilliseconds, rows);
+			}
+		}
+
 		private List<T> QueryInternal(Action<global::OhioBox.Moranbernate.Querying.IQueryBuilder<T>> action, string metricsKey, Func<string> logMessage)
 		{
 			var sw = Stopwatch.StartNew();
@@ -143,7 +169,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			{
 				sw.Stop();
 				_metricsReporter.Report($"{_space}.{metricsKey}", sw.Elapsed.Ticks);
-				if (sw.ElapsedMilliseconds > 1000)
+				if (sw.ElapsedMilliseconds > QueryRuntimeThreshold)
 					LogSlowQuery(sw.ElapsedMilliseconds, rows, logMessage != null ? logMessage() : null);
 			}
 		}

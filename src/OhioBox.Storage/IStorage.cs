@@ -24,5 +24,7 @@ namespace OhioBox.Storage
 
 		IList<T> GetByField<TKey>(Expression<Func<T, TKey>> selector, TKey key);
 		IList<T> GetByField<TKey>(Expression<Func<T, TKey>> selector, ICollection<TKey> ids);
+
+		int UpdateByQuery(Action<IQueryBuilder<T>> query, Action<IUpdateBuilder<T>> update);
 	}
 }
