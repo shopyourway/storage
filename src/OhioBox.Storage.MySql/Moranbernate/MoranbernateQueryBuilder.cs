@@ -100,7 +100,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return this;
 		}
 
-		public abstract IQueryBuilder<T> Take(int limit);
+		public abstract IQueryBuilder<T> Limit(int limit);
 
 		public abstract IQueryBuilder<T> Skip(int amount);
 
@@ -127,7 +127,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			@where(_restrictable);
 		}
 
-		public override IQueryBuilder<T> Take(int limit)
+		public override IQueryBuilder<T> Limit(int limit)
 		{
 			throw new NotSupportedException();
 		}
@@ -172,7 +172,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			_queryBuilder.Where(where);
 		}
 
-		public override IQueryBuilder<T> Take(int limit)
+		public override IQueryBuilder<T> Limit(int limit)
 		{
 			_queryBuilder.Take(limit);
 			return this;
