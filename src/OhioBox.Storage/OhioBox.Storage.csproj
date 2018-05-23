@@ -4,7 +4,7 @@
     <PackageId>OhioBox.Storage</PackageId>
     <BuildNumber>0</BuildNumber>
     <PackageVersionSuffix>-dev</PackageVersionSuffix>
-    <AssemblyVersion>2.0.$(BuildNumber)</AssemblyVersion>
+    <AssemblyVersion>3.0.$(BuildNumber)</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <PackageVersion>$(AssemblyVersion)$(PackageVersionSuffix)</PackageVersion>
     <Authors>Sears Israel</Authors>
