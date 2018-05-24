@@ -26,6 +26,9 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return this;
 		}
 
+		public IUpdateBuilder<T> AddToSet<TValue>(Expression<Func<T, IList<TValue>>> field, params TValue[] values)
+		{
+			// Not implemented since there is no collection support in moranbernate
 			return this;
 		}
 	}

@@ -161,6 +161,15 @@ namespace OhioBox.Storage.MySql.Tests
 			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.VisitCount == 4));
 		}
 
+		[Test]
+		public void UpdateByQuery_WhenAddToSetIsUsed_DoNothingCauseThereIsNoCollectionSupportInMoranbernate()
+		{
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+
+			Assert.DoesNotThrow(() => _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST").AddToSet(x => x.Permissions, "read")));
+		}
+
 		private void AddUser(long id, string name, DateTime? updateDate = null, int? visitCount = null, string[] permissions = null)
 		{
 			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate, VisitCount = visitCount, Permissions = permissions});
