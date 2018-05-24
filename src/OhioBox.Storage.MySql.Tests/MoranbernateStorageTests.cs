@@ -118,9 +118,26 @@ namespace OhioBox.Storage.MySql.Tests
 			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.UpdateDate == new DateTime(2018, 5, 21)));
 		}
 
-		private void AddUser(long id, string name, DateTime? updateDate = null)
+		[Test]
+		public void UpdateByQuery_WhenFieldIsIncremented_IncrementFieldBySpecifiedValue()
 		{
-			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate});
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+			AddUser(3L, "Dror", visitCount: 3);
+
+			var result = _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST").Increment(x => x.VisitCount, 1));
+
+			Assert.That(result, Is.EqualTo(2));
+
+			var users = _target.Query(q => { });
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.VisitCount == 1));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "TEST" && x.VisitCount == 3));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.VisitCount == 4));
+		}
+
+		private void AddUser(long id, string name, DateTime? updateDate = null, int? visitCount = null)
+		{
+			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate, VisitCount = visitCount});
 		}
 
 		private class DummyLogger : IPerfLogger<UserDto>
