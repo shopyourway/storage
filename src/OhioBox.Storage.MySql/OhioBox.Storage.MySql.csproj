@@ -8,9 +8,9 @@
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<PackageVersion>$(AssemblyVersion)$(PackageVersionSuffix)</PackageVersion>
 		<Authors>Sears Israel</Authors>
+		<RepositoryUrl>https://github.com/shopyourway/storage</RepositoryUrl>
 		<Description>OhioBox.Storage integration with Moranbernate ORM</Description>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<RepositoryUrl></RepositoryUrl>
 		<Copyright>Copyright © 2017 SHC Israel. All rights reserved.</Copyright>
 		<PackageTags>ORM DB Database MySQL CRUD</PackageTags>
 	</PropertyGroup>
