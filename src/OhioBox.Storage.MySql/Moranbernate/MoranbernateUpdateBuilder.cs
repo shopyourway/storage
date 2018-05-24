@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using OhioBox.Moranbernate.Utils;
 
@@ -21,6 +22,10 @@ namespace OhioBox.Storage.MySql.Moranbernate
 
 		public IUpdateBuilder<T> Increment<TValue>(Expression<Func<T, TValue>> field, TValue value)
 		{
+			_builder.Increment(field, value);
+			return this;
+		}
+
 			return this;
 		}
 	}

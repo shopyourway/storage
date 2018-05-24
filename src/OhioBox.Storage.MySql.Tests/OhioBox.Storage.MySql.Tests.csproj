@@ -15,7 +15,7 @@
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
 		<PackageReference Include="NUnitTestAdapter" Version="2.1.1" />
 		<PackageReference Include="nunit" Version="2.6.3" />
-		<PackageReference Include="OhioBox.Moranbernate" Version="5.0.14" />
+		<PackageReference Include="OhioBox.Moranbernate" Version="5.0.15" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\OhioBox.Storage.MySql\OhioBox.Storage.MySql.csproj" />
