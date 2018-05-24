@@ -85,6 +85,32 @@ namespace OhioBox.Storage.MySql.Tests
 		}
 
 		[Test]
+		public void Query_WhenQueryHasInAny_DoNothingSinceCollectionsAreNotSupported()
+		{
+			AddUser(1L, "Doron", permissions: new [] { "read", "write" });
+			AddUser(2L, "Shani", permissions: new [] { "read" } );
+
+			var result = _target.Query(q => q.InAny(x => x.Permissions, new[] { "write" }));
+
+			Assert.That(result, Has.Count.EqualTo(2));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 1L));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 2L));
+		}
+
+		[Test]
+		public void Query_WhenQueryHasNotInAny_DoNothingSinceCollectionsAreNotSupported()
+		{
+			AddUser(1L, "Doron", permissions: new[] { "read", "write" });
+			AddUser(2L, "Shani", permissions: new[] { "read" });
+
+			var result = _target.Query(q => q.NotInAny(x => x.Permissions, new[] { "write" }));
+
+			Assert.That(result, Has.Count.EqualTo(2));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 1L));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 2L));
+		}
+
+		[Test]
 		public void UpdateByQuery_WhenCalled_UpdatesOnlyRelevantRows()
 		{
 			AddUser(1L, "Doron");
@@ -135,9 +161,9 @@ namespace OhioBox.Storage.MySql.Tests
 			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.VisitCount == 4));
 		}
 
-		private void AddUser(long id, string name, DateTime? updateDate = null, int? visitCount = null)
+		private void AddUser(long id, string name, DateTime? updateDate = null, int? visitCount = null, string[] permissions = null)
 		{
-			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate, VisitCount = visitCount});
+			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate, VisitCount = visitCount, Permissions = permissions});
 		}
 
 		private class DummyLogger : IPerfLogger<UserDto>
