@@ -25,7 +25,7 @@
 		<PackageReference Include="System.Collections" Version="4.3.0" />
 		<PackageReference Include="System.Runtime" Version="4.3.0" />
 		<PackageReference Include="MySql.Data" Version="6.10.6" />
-		<PackageReference Include="OhioBox.Moranbernate" Version="5.0.14" />
+		<PackageReference Include="OhioBox.Moranbernate" Version="5.0.15" />
 	</ItemGroup>
 	<!--<ItemGroup Condition="'$(Configuration)' == 'Debug'">-->
 	<ItemGroup>
