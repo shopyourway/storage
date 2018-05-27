@@ -118,6 +118,42 @@ namespace OhioBox.Storage.MySql.Tests
 			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.UpdateDate == new DateTime(2018, 5, 21)));
 		}
 
+		[Test]
+		public void DeleteByQuery_WhenSomeRowsMatchesQuery_DeleteTheseRows()
+		{
+			AddUser(1L, "Doron", new DateTime(2018, 5, 10));
+			AddUser(2L, "Shani", new DateTime(2018, 5, 11));
+			AddUser(3L, "Dror", new DateTime(2018, 5, 12));
+
+			var result = _target.DeleteByQuery(q => q.GreaterOrEqual(x => x.UpdateDate, new DateTime(2018, 5, 11)));
+
+			Assert.That(result, Is.EqualTo(2));
+
+			var allUsers = _target.Query(q => { });
+
+			Assert.That(allUsers, Has.Count.EqualTo(1));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 1L));
+		}
+
+		[Test]
+		public void DeleteByQuery_WhenNoRowsMatchesQuery_DeleteNone()
+		{
+			AddUser(1L, "Doron", new DateTime(2018, 5, 10));
+			AddUser(2L, "Shani", new DateTime(2018, 5, 11));
+			AddUser(3L, "Dror", new DateTime(2018, 5, 12));
+
+			var result = _target.DeleteByQuery(q => q.LessThan(x => x.UpdateDate, new DateTime(2018, 5, 9)));
+
+			Assert.That(result, Is.EqualTo(0));
+
+			var allUsers = _target.Query(q => { });
+
+			Assert.That(allUsers, Has.Count.EqualTo(3));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 1L));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 2L));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 3L));
+		}
+
 		private void AddUser(long id, string name, DateTime? updateDate = null)
 		{
 			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate});

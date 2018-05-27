@@ -152,6 +152,29 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			}
 		}
 
+		public int DeleteByQuery(Action<IQueryBuilder<T>> query)
+		{
+			var sw = Stopwatch.StartNew();
+			var rows = 0;
+
+			try
+			{
+				using (var conn = _connectionProvider.GetOpenConnection())
+				{
+					rows = conn.DeleteByQuery<T>(restrictable => query(new MoranbernateRestrictions<T>(restrictable)));
+
+					return rows;
+				}
+			}
+			finally
+			{
+				sw.Stop();
+				_metricsReporter.Report($"{_space}.DeleteByQuery", sw.Elapsed.Ticks);
+				if (sw.ElapsedMilliseconds > QueryRuntimeThreshold)
+					LogSlowQuery(sw.ElapsedMilliseconds, rows);
+			}
+		}
+
 		private List<T> QueryInternal(Action<global::OhioBox.Moranbernate.Querying.IQueryBuilder<T>> action, string metricsKey, Func<string> logMessage)
 		{
 			var sw = Stopwatch.StartNew();
