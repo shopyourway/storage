@@ -37,5 +37,11 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			// Not implemented since there is no collection support in moranbernate
 			return this;
 		}
+
+		public IUpdateBuilder<T> RemoveFromSet<TValue>(Expression<Func<T, IList<TValue>>> field, params TValue[] values)
+		{
+			// Not implemented since there is no collection support in moranbernate
+			return this;
+		}
 	}
 }
