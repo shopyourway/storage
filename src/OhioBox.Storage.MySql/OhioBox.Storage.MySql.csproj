@@ -36,6 +36,6 @@
 		<ProjectReference Include="..\OhioBox.Storage\OhioBox.Storage.csproj" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' != 'Debug'">
-		<PackageReference Include="OhioBox.Storage" Version="3.0.*-rc" />
+		<PackageReference Include="OhioBox.Storage" Version="3.0.*" />
 	</ItemGroup>
 </Project>
