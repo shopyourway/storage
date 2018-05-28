@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -129,30 +130,36 @@ namespace OhioBox.Storage.MySql.Moranbernate
 
 		public int UpdateByQuery(Action<IQueryBuilder<T>> query, Action<IUpdateBuilder<T>> update)
 		{
-			var sw = Stopwatch.StartNew();
-			var rows = 0;
-
-			try
+			return ExecuteQuery(conn =>
 			{
-				using (var conn = _connectionProvider.GetOpenConnection())
+				var rows = conn.UpdateByQuery<T>(
+					builder => update(new MoranbernateUpdateBuilder<T>(builder)),
+					restrictable => query(new MoranbernateRestrictions<T>(restrictable)));
+
+				return (rows, rows);
+			}, "UpdateByQuery");
+		}
+
+		public int DeleteByQuery(Action<IQueryBuilder<T>> query)
+		{
+			return ExecuteQuery(conn =>
 				{
-					rows = conn.UpdateByQuery<T>(
-						builder => update(new MoranbernateUpdateBuilder<T>(builder)), 
-						restrictable => query(new MoranbernateRestrictions<T>(restrictable)));
-
-					return rows;
-				}
-			}
-			finally
-			{
-				sw.Stop();
-				_metricsReporter.Report($"{_space}.UpdateByQuery", sw.Elapsed.Ticks);
-				if (sw.ElapsedMilliseconds > QueryRuntimeThreshold)
-					LogSlowQuery(sw.ElapsedMilliseconds, rows);
-			}
+					var rows = conn.DeleteByQuery<T>(restrictable => query(new MoranbernateRestrictions<T>(restrictable)));
+					return (rows, rows);
+				}, 
+				"DeleteByQuery");
 		}
 
 		private List<T> QueryInternal(Action<global::OhioBox.Moranbernate.Querying.IQueryBuilder<T>> action, string metricsKey, Func<string> logMessage)
+		{
+			return ExecuteQuery(conn =>
+			{
+				var list = conn.Query(action).ToList();
+				return (list, list.Count);
+			}, metricsKey, logMessage);
+		}
+
+		private TR ExecuteQuery<TR>(Func<IDbConnection, (TR result, int rows)> action, string metricsKey, Func<string> logMessage = null)
 		{
 			var sw = Stopwatch.StartNew();
 			var rows = 0;
@@ -160,9 +167,9 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			{
 				using (var conn = _connectionProvider.GetOpenConnection())
 				{
-					var list = conn.Query(action).ToList();
-					rows = list.Count;
-					return list;	
+					var result = action(conn);
+					rows = result.rows;
+					return result.result;
 				}
 			}
 			finally
@@ -170,7 +177,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 				sw.Stop();
 				_metricsReporter.Report($"{_space}.{metricsKey}", sw.Elapsed.Ticks);
 				if (sw.ElapsedMilliseconds > QueryRuntimeThreshold)
-					LogSlowQuery(sw.ElapsedMilliseconds, rows, logMessage != null ? logMessage() : null);
+					LogSlowQuery(sw.ElapsedMilliseconds, rows, logMessage?.Invoke());
 			}
 		}
 
