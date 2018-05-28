@@ -85,6 +85,32 @@ namespace OhioBox.Storage.MySql.Tests
 		}
 
 		[Test]
+		public void Query_WhenQueryHasInAny_DoNothingSinceCollectionsAreNotSupported()
+		{
+			AddUser(1L, "Doron", permissions: new [] { "read", "write" });
+			AddUser(2L, "Shani", permissions: new [] { "read" } );
+
+			var result = _target.Query(q => q.InAny(x => x.Permissions, new[] { "write" }));
+
+			Assert.That(result, Has.Count.EqualTo(2));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 1L));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 2L));
+		}
+
+		[Test]
+		public void Query_WhenQueryHasNotInAny_DoNothingSinceCollectionsAreNotSupported()
+		{
+			AddUser(1L, "Doron", permissions: new[] { "read", "write" });
+			AddUser(2L, "Shani", permissions: new[] { "read" });
+
+			var result = _target.Query(q => q.NotInAny(x => x.Permissions, new[] { "write" }));
+
+			Assert.That(result, Has.Count.EqualTo(2));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 1L));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 2L));
+		}
+
+		[Test]
 		public void UpdateByQuery_WhenCalled_UpdatesOnlyRelevantRows()
 		{
 			AddUser(1L, "Doron");
@@ -116,6 +142,58 @@ namespace OhioBox.Storage.MySql.Tests
 			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.UpdateDate == new DateTime(2018, 5, 10)));
 			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "TEST" && x.UpdateDate == new DateTime(2018, 5, 21)));
 			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.UpdateDate == new DateTime(2018, 5, 21)));
+		}
+
+		[Test]
+		public void UpdateByQuery_WhenFieldIsIncremented_IncrementFieldBySpecifiedValue()
+		{
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+			AddUser(3L, "Dror", visitCount: 3);
+
+			var result = _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST").Increment(x => x.VisitCount, 1));
+
+			Assert.That(result, Is.EqualTo(2));
+
+			var users = _target.Query(q => { });
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.VisitCount == 1));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "TEST" && x.VisitCount == 3));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.VisitCount == 4));
+		}
+
+		[Test]
+		public void UpdateByQuery_WhenFieldIsDecremented_DecrementFieldBySpecifiedValue()
+		{
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+			AddUser(3L, "Dror", visitCount: 3);
+
+			var result = _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST").Decrement(x => x.VisitCount, 1));
+
+			Assert.That(result, Is.EqualTo(2));
+
+			var users = _target.Query(q => { });
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.VisitCount == 1));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "TEST" && x.VisitCount == 1));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.VisitCount == 2));
+		}
+
+		[Test]
+		public void UpdateByQuery_WhenAddToSetIsUsed_DoNothingCauseThereIsNoCollectionSupportInMoranbernate()
+		{
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+
+			Assert.DoesNotThrow(() => _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST").AddToSet(x => x.Permissions, "read")));
+		}
+
+		[Test]
+		public void UpdateByQuery_WhenRemoveToSetIsUsed_DoNothingCauseThereIsNoCollectionSupportInMoranbernate()
+		{
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+
+			Assert.DoesNotThrow(() => _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST").RemoveFromSet(x => x.Permissions, "read")));
 		}
 
 		[Test]
@@ -154,9 +232,9 @@ namespace OhioBox.Storage.MySql.Tests
 			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 3L));
 		}
 
-		private void AddUser(long id, string name, DateTime? updateDate = null)
+		private void AddUser(long id, string name, DateTime? updateDate = null, int? visitCount = null, string[] permissions = null)
 		{
-			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate});
+			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate, VisitCount = visitCount, Permissions = permissions});
 		}
 
 		private class DummyLogger : IPerfLogger<UserDto>
