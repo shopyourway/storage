@@ -33,6 +33,12 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return this;
 		}
 
+		public IQueryBuilder<T> InAny<TValue>(Expression<Func<T, IList<TValue>>> member, ICollection<TValue> value)
+		{
+			// No support for collections in mornabernate as of now
+			return this;
+		}
+
 		public IQueryBuilder<T> NotEqual<TValue>(Expression<Func<T, TValue>> member, TValue value)
 		{
 			if (value == null)
@@ -49,6 +55,12 @@ namespace OhioBox.Storage.MySql.Moranbernate
 				return this;
 
 			AddPredicate(w => w.NotIn(member, value));
+			return this;
+		}
+
+		public IQueryBuilder<T> NotInAny<TValue>(Expression<Func<T, IList<TValue>>> member, ICollection<TValue> value)
+		{
+			// No support for collections in mornabernate as of now
 			return this;
 		}
 

@@ -11,6 +11,7 @@ namespace OhioBox.Storage.MySql.Tests.Mapping
 			Id(x => x.Id).GeneratedBy.Assigned();
 			Map(x => x.Name);
 			Map(x => x.UpdateDate);
+			Map(x => x.VisitCount);
 		}
 	}
 }

@@ -19,5 +19,29 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			_builder.Set(field, value);
 			return this;
 		}
+
+		public IUpdateBuilder<T> Increment<TValue>(Expression<Func<T, TValue>> field, TValue value)
+		{
+			_builder.Increment(field, value);
+			return this;
+		}
+
+		public IUpdateBuilder<T> Decrement<TValue>(Expression<Func<T, TValue>> field, TValue value)
+		{
+			_builder.Decrement(field, value);
+			return this;
+		}
+
+		public IUpdateBuilder<T> AddToSet<TValue>(Expression<Func<T, IList<TValue>>> field, params TValue[] values)
+		{
+			// Not implemented since there is no collection support in moranbernate
+			return this;
+		}
+
+		public IUpdateBuilder<T> RemoveFromSet<TValue>(Expression<Func<T, IList<TValue>>> field, params TValue[] values)
+		{
+			// Not implemented since there is no collection support in moranbernate
+			return this;
+		}
 	}
 }
