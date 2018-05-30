@@ -30,7 +30,7 @@ namespace OhioBox.Storage
 
 		IQueryBuilder<T> IsNotNull<TValue>(Expression<Func<T, TValue>> member);
 
-		IQueryBuilder<T> Take(int limit);
+		IQueryBuilder<T> Limit(int limit);
 
 		IQueryBuilder<T> Skip(int amount);
 
@@ -62,7 +62,7 @@ namespace OhioBox.Storage
 		public static IQueryBuilder<T> TakeIfNotNull<T>(this IQueryBuilder<T> target, int? take)
 		{
 			if (take.HasValue)
-				return target.Take(take.Value);
+				return target.Limit(take.Value);
 
 			return target;
 		}
