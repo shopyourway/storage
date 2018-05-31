@@ -13,7 +13,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		IEnumerable<QueryResult<T>> QueryAggregated(Action<IQueryBuilder<T>> query = null);
 	}
 
-	internal class AggregatedQueryRunner<T> : IAggregatedQueryRunner<T>
+	public class AggregatedQueryRunner<T> : IAggregatedQueryRunner<T>
 		where T : class, new()
 	{
 		private readonly ISqlConnectionFactory _connectionFactory;
