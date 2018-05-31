@@ -100,13 +100,13 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return this;
 		}
 
-		public IQueryBuilder<T> StartWith(Expression<Func<T, object>> member, string value)
+		public IQueryBuilder<T> StartWith(Expression<Func<T, string>> member, string value)
 		{
 			AddPredicate(w => w.StartWith(member, value));
 			return this;
 		}
 
-		public IQueryBuilder<T> Contains(Expression<Func<T, object>> member, string value)
+		public IQueryBuilder<T> Contains(Expression<Func<T, string>> member, string value)
 		{
 			AddPredicate(w => w.Contains(member, value));
 			return this;
