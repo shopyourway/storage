@@ -31,6 +31,15 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			_metricsReporter = metricsReporter ?? new DefaultMetricsReporter();
 		}
 
+		public AggregatedQueryRunner(string connectionString,
+			IPerfLogger<T> perfLogger = null,
+			IMetricsReporter metricsReporter = null)
+		{
+			_perfLogger = perfLogger ?? new DefaultPerfLogger<T>();
+			_metricsReporter = metricsReporter ?? new DefaultMetricsReporter();
+			_connectionFactory = new SqlConnectionFactory(connectionString, _metricsReporter);
+		}
+
 		public IEnumerable<QueryResult<T>> QueryAggregated(Action<IQueryBuilder<T>> query = null)
 		{
 			try

@@ -33,9 +33,9 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			IPerfLogger<T> perfLogger = null,
 			IMetricsReporter metricsReporter = null)
 		{
-			_connectionFactory = new SqlConnectionFactory(connectionString);
 			_perfLogger = perfLogger ?? new DefaultPerfLogger<T>();
 			_metricsReporter = metricsReporter ?? new DefaultMetricsReporter();
+			_connectionFactory = new SqlConnectionFactory(connectionString, _metricsReporter);
 		}
 
 		public int Count(Action<IQueryBuilder<T>> queryManipulator)
