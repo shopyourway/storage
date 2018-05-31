@@ -29,6 +29,15 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			_metricsReporter = metricsReporter ?? new DefaultMetricsReporter();
 		}
 
+		public MoranbernateStorage(string connectionString, 
+			IPerfLogger<T> perfLogger = null,
+			IMetricsReporter metricsReporter = null)
+		{
+			_connectionFactory = new SqlConnectionFactory(connectionString);
+			_perfLogger = perfLogger ?? new DefaultPerfLogger<T>();
+			_metricsReporter = metricsReporter ?? new DefaultMetricsReporter();
+		}
+
 		public int Count(Action<IQueryBuilder<T>> queryManipulator)
 		{
 			using (_metricsReporter.Report($"{_space}.Count"))
