@@ -46,6 +46,10 @@ namespace OhioBox.Storage
 
 		IQueryBuilder<T> Contains(Expression<Func<T, string>> member, string value);
 
+		IQueryBuilder<T> RegexMatch(Expression<Func<T, string>> member, string pattern);
+
+		IQueryBuilder<T> RegexMatch(Expression<Func<T, IEnumerable<string>>> member, string pattern);
+			
 		IQueryBuilder<T> FieldExists(Expression<Func<T, object>> member);
 
 		IQueryBuilder<T> FieldDoesNotExist(Expression<Func<T, object>> member);
