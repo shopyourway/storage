@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OhioBox.Storage.MySql.Moranbernate
+namespace OhioBox.Storage.MySql
 {
 	public interface IPerfLogger<T>
 	{
