@@ -32,10 +32,11 @@
 		<PackageReference Include="MySql.Data" Version="6.10.6" />
 		<PackageReference Include="OhioBox.Moranbernate" Version="5.1.16" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+	<ItemGroup>
 		<ProjectReference Include="..\OhioBox.Storage\OhioBox.Storage.csproj" />
 	</ItemGroup>
+	<!--
 	<ItemGroup Condition="'$(Configuration)' != 'Debug'">
 		<PackageReference Include="OhioBox.Storage" Version="3.0.2-rc" />
-	</ItemGroup>
+	</ItemGroup>-->
 </Project>
