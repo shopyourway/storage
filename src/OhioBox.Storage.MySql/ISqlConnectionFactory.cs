@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace OhioBox.Storage.MySql
@@ -9,5 +10,7 @@ namespace OhioBox.Storage.MySql
 		ISqlConnectionProvider GetConnectionProvider<T>();
 		IEnumerable<ISqlConnectionProvider> Providers { get; }
 		IList<KeyValuePair<string, string>> GetTypeFullNameAndAonnectionString();
+
+		void Add(string connectionString, IEnumerable<Type> types);
 	}
 }
