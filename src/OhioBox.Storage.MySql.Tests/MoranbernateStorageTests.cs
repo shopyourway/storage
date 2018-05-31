@@ -124,6 +124,20 @@ namespace OhioBox.Storage.MySql.Tests
 		}
 
 		[Test]
+		public void Query_WhenQueryWithFieldDoesNotExist_ReturnRowsWithNullField()
+		{
+			AddUser(1L, "Shani");
+			AddUser(2L, "Doron", new DateTime(2018, 5, 31));
+			AddUser(3L, "Yuval");
+
+			var result = _target.Query(q => q.FieldDoesNotExist(x => x.UpdateDate));
+
+			Assert.That(result, Has.Count.EqualTo(2));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 1L));
+			Assert.That(result, Has.Some.Matches<UserDto>(x => x.Id == 3L));
+		}
+
+		[Test]
 		public void UpdateByQuery_WhenCalled_UpdatesOnlyRelevantRows()
 		{
 			AddUser(1L, "Doron");

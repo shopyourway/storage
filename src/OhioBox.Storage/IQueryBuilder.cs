@@ -45,7 +45,10 @@ namespace OhioBox.Storage
 		IQueryBuilder<T> StartWith(Expression<Func<T, string>> member, string value);
 
 		IQueryBuilder<T> Contains(Expression<Func<T, string>> member, string value);
+
 		IQueryBuilder<T> FieldExists(Expression<Func<T, object>> member);
+
+		IQueryBuilder<T> FieldDoesNotExist(Expression<Func<T, object>> member);
 	}
 
 	public static class QueryBuilderExt

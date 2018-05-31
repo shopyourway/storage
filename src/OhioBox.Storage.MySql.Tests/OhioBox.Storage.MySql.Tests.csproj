@@ -18,7 +18,7 @@
 		<PackageReference Include="OhioBox.Moranbernate" Version="5.1.16" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\OhioBox.Storage.MySql\OhioBox.Storage.MySql.csproj" />
+	  <ProjectReference Include="..\OhioBox.Storage.MySql\OhioBox.Storage.MySql.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
