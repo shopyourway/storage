@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OhioBox.Moranbernate.Querying;
+using OhioBox.Storage.MySql.Bootstrap;
 
 
 namespace OhioBox.Storage.MySql.Moranbernate
@@ -12,22 +13,31 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		IEnumerable<QueryResult<T>> QueryAggregated(Action<IQueryBuilder<T>> query = null);
 	}
 
-	internal class AggregatedQueryRunner<T> : IAggregatedQueryRunner<T>
+	public class AggregatedQueryRunner<T> : IAggregatedQueryRunner<T>
 		where T : class, new()
 	{
-		private readonly ISqlConnectionProvider _connectionProvider;
+		private readonly ISqlConnectionFactory _connectionFactory;
 		private readonly IPerfLogger<T> _perfLogger;
 		private readonly IMetricsReporter _metricsReporter;
 
 		private readonly string _space = $"Storage.Moranbernate.{typeof(T).Name}";
 
 		public AggregatedQueryRunner(ISqlConnectionFactory connectionFactory,
-			IPerfLogger<T> perfLogger,
-			IMetricsReporter metricsReporter)
+			IPerfLogger<T> perfLogger = null,
+			IMetricsReporter metricsReporter = null)
 		{
-			_perfLogger = perfLogger;
-			_metricsReporter = metricsReporter;
-			_connectionProvider = connectionFactory.GetConnectionProvider<T>();
+			_connectionFactory = connectionFactory;
+			_perfLogger = perfLogger ?? new DefaultPerfLogger<T>();
+			_metricsReporter = metricsReporter ?? new DefaultMetricsReporter();
+		}
+
+		public AggregatedQueryRunner(string connectionString,
+			IPerfLogger<T> perfLogger = null,
+			IMetricsReporter metricsReporter = null)
+		{
+			_perfLogger = perfLogger ?? new DefaultPerfLogger<T>();
+			_metricsReporter = metricsReporter ?? new DefaultMetricsReporter();
+			_connectionFactory = new SqlConnectionFactory(connectionString, _metricsReporter);
 		}
 
 		public IEnumerable<QueryResult<T>> QueryAggregated(Action<IQueryBuilder<T>> query = null)
@@ -35,7 +45,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			try
 			{
 				using (_metricsReporter.Report($"{_space}.Aggregate"))
-				using (var connection = _connectionProvider.GetOpenConnection())
+				using (var connection = _connectionFactory.GetConnection<T>())
 				{
 					return connection
 						.QueryAggregated<T>(q =>
