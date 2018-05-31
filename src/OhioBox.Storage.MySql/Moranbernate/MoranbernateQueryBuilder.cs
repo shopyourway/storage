@@ -117,6 +117,13 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			AddPredicate(w => w.RegexMatch(member, pattern));
 			return this;
 		}
+
+		public IQueryBuilder<T> RegexMatch(Expression<Func<T, IEnumerable<string>>> member, string pattern)
+		{
+			// No collection support in Moranbernate at this time
+			return this;
+		}
+
 		public IQueryBuilder<T> FieldExists(Expression<Func<T, object>> member)
 		{
 			return IsNotNull(member);

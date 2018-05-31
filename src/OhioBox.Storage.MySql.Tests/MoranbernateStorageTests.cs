@@ -152,6 +152,18 @@ namespace OhioBox.Storage.MySql.Tests
 		}
 
 		[Test]
+		public void Query_WhenQueryWithCollectionRegEx_DoNothingSinceCollectionsAreNotSupported()
+		{
+			AddUser(1L, "Shani", permissions:new [] { "read", "write" });
+			AddUser(2L, "Doron");
+			AddUser(3L, "Yaron", permissions:new [] { "read", "write" });
+
+			var result = _target.Query(q => q.RegexMatch(x => x.Permissions, ".+ea.+"));
+
+			Assert.That(result, Has.Count.EqualTo(3));
+		}
+
+		[Test]
 		public void UpdateByQuery_WhenCalled_UpdatesOnlyRelevantRows()
 		{
 			AddUser(1L, "Doron");
