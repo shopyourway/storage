@@ -6,42 +6,37 @@ using System.Linq;
 using System.Linq.Expressions;
 using OhioBox.Moranbernate.Querying;
 using OhioBox.Moranbernate.Utils;
+using OhioBox.Storage.MySql.Bootstrap;
 
 namespace OhioBox.Storage.MySql.Moranbernate
 {
 	public class MoranbernateStorage<T> : IStorage<T>
 		where T : class, new()
 	{
-		private readonly ISqlConnectionProvider _connectionProvider;
+		private readonly ISqlConnectionFactory _connectionFactory;
 		private readonly IPerfLogger<T> _perfLogger;
 		private readonly IMetricsReporter _metricsReporter;
 
 		private readonly string _space = $"Storage.Moranbernate.{typeof(T).Name}";
 		private const int QueryRuntimeThreshold = 1000;
 
-
 		public MoranbernateStorage(ISqlConnectionFactory connectionFactory, 
-			IPerfLogger<T> perfLogger,
-			IMetricsReporter metricsReporter)
+			IPerfLogger<T> perfLogger = null,
+			IMetricsReporter metricsReporter = null)
 		{
-			_perfLogger = perfLogger;
-			_metricsReporter = metricsReporter;
-			_connectionProvider = connectionFactory.GetConnectionProvider<T>();
-		}
-
-		public QueryResults<TResult> RunQuery<TResult>(Func<IQueryable<T>, IQueryable<TResult>> queryOverQueryable)
-		{
-			throw new NotImplementedException();
+			_connectionFactory = connectionFactory;
+			_perfLogger = perfLogger ?? new DefaultPerfLogger<T>();
+			_metricsReporter = metricsReporter ?? new DefaultMetricsReporter();
 		}
 
 		public int Count(Action<IQueryBuilder<T>> queryManipulator)
 		{
 			using (_metricsReporter.Report($"{_space}.Count"))
-			using (var conn = _connectionProvider.GetOpenConnection())
+			using (var conn = _connectionFactory.GetConnection<T>())
 			{
-				var count = conn.Count<T>(restrictable => {
-					if (queryManipulator != null)
-						queryManipulator(new MoranbernateRestrictions<T>(restrictable));
+				var count = conn.Count<T>(restrictable =>
+				{
+					queryManipulator?.Invoke(new MoranbernateRestrictions<T>(restrictable));
 				});
 				return Convert.ToInt32(count);
 			}
@@ -52,7 +47,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			if (ts.Count == 0)
 				return;
 			using (_metricsReporter.Report($"{_space}.Delete"))
-			using (var conn = _connectionProvider.GetOpenConnection())
+			using (var conn = _connectionFactory.GetConnection<T>())
 			{
 				foreach (var t in ts)
 					conn.Delete(t);
@@ -62,7 +57,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		public T GetById(object t)
 		{
 			using (_metricsReporter.Report($"{_space}.GetByid"))
-			using (var conn = _connectionProvider.GetOpenConnection())
+			using (var conn = _connectionFactory.GetConnection<T>())
 			{
 				return conn.GetById<T>(t);
 			}
@@ -82,7 +77,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		public void Add(T t)
 		{
 			using (_metricsReporter.Report($"{_space}.Add"))
-			using (var conn = _connectionProvider.GetOpenConnection())
+			using (var conn = _connectionFactory.GetConnection<T>())
 			{
 				conn.Insert(t);
 			}
@@ -91,7 +86,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		public void Update(T t)
 		{
 			using (_metricsReporter.Report($"{_space}.Update"))
-			using (var conn = _connectionProvider.GetOpenConnection())
+			using (var conn = _connectionFactory.GetConnection<T>())
 			{
 				conn.Update(t);
 			}
@@ -100,7 +95,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		public void Delete(T t)
 		{
 			using (_metricsReporter.Report($"{_space}.Delete"))
-			using (var conn = _connectionProvider.GetOpenConnection())
+			using (var conn = _connectionFactory.GetConnection<T>())
 			{
 				conn.Delete(t);
 			}
@@ -109,7 +104,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		public void Save(T t)
 		{
 			using (_metricsReporter.Report($"{_space}.Save"))
-			using (var conn = _connectionProvider.GetOpenConnection())
+			using (var conn = _connectionFactory.GetConnection<T>())
 			{
 				conn.Upsert(t);
 			}
@@ -165,7 +160,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			var rows = 0;
 			try
 			{
-				using (var conn = _connectionProvider.GetOpenConnection())
+				using (var conn = _connectionFactory.GetConnection<T>())
 				{
 					var result = action(conn);
 					rows = result.rows;
@@ -190,7 +185,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		public void Add(IList<T> ts)
 		{
 			using (_metricsReporter.Report($"{_space}.BulkInsert"))
-			using (var conn = _connectionProvider.GetOpenConnection())
+			using (var conn = _connectionFactory.GetConnection<T>())
 			{
 				conn.BulkInsert(ts);
 			}
@@ -199,7 +194,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		public void Save(IList<T> ts)
 		{
 			using (_metricsReporter.Report($"{_space}.BulkUpsert"))
-			using (var conn = _connectionProvider.GetOpenConnection())
+			using (var conn = _connectionFactory.GetConnection<T>())
 			{
 				conn.BulkUpsert(ts);
 			}

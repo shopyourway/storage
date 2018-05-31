@@ -1,63 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
+using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
+using OhioBox.Storage.MySql.Bootstrap;
 
 namespace OhioBox.Storage.MySql
 {
 	public class SqlConnectionFactory : ISqlConnectionFactory
 	{
+		private readonly string _connectionString;
 		private readonly IMetricsReporter _metricsReporter;
-		private readonly Dictionary<Type, ISqlConnectionProvider> _typeToConnection = new Dictionary<Type, ISqlConnectionProvider>();
-		private readonly List<ISqlConnectionProvider> _providers = new List<ISqlConnectionProvider>();
+		private readonly string _schema;
 
-		public IEnumerable<ISqlConnectionProvider> Providers => _providers;
-
-		public SqlConnectionFactory(IMetricsReporter metricsReporter)
+		public SqlConnectionFactory(string connectionString, IMetricsReporter metricsReporter = null)
 		{
-			_metricsReporter = metricsReporter;
-		}
-
-		public IList<KeyValuePair<string, string>> GetTypeFullNameAndAonnectionString()
-		{
-			return _typeToConnection.Select(connectionProvider => new KeyValuePair<string, string>(connectionProvider.Key.FullName, connectionProvider.Value.ProvideConnection().ConnectionString)).ToList();
-		}
-
-		public void Add(string connectionString, IEnumerable<Type> types)
-		{
-			var provider = new SqlConnectionProvider(connectionString, _metricsReporter);
-
-			_providers.Add(provider);
-
-			foreach (var type in types)
-			{
-				_typeToConnection.Add(type, provider);
-			}
+			_connectionString = connectionString;
+			_schema = ParseSchema(connectionString);
+			_metricsReporter = metricsReporter ?? new DefaultMetricsReporter();
 		}
 
 		public IDbConnection GetConnection<T>()
 		{
-			var provider = InnerGetConnectionProvider<T>();
-
-			var connection = provider.ProvideConnection();
-			
-			return connection;
+			using (_metricsReporter.Report($"Storage.OpenConnection.{_schema}"))
+			{
+				var sqlConnection = new MySqlConnection(_connectionString);
+				sqlConnection.Open();
+				return sqlConnection;
+			}
 		}
 
-		public ISqlConnectionProvider GetConnectionProvider<T>()
+		private static string ParseSchema(string connectionString)
 		{
-			return InnerGetConnectionProvider<T>();
+			try
+			{
+				return Regex.Match(connectionString, "Database=(.+?);").Groups[1].Value;
+			}
+			catch
+			{
+				return "MaorWroteABadRegex";
+			}
 		}
 
-		private ISqlConnectionProvider InnerGetConnectionProvider<T>()
-		{
-			var type = typeof(T);
-			var provider = _typeToConnection.GetItemOrDefault(type);
-
-			if (provider == null)
-				throw new ClassHasNotBeenRegisteredException(type);
-
-			return provider;
-		}
 	}
 }
