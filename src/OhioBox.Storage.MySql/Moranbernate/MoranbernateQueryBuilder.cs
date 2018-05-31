@@ -112,6 +112,17 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return this;
 		}
 
+		public IQueryBuilder<T> FieldExists(Expression<Func<T, object>> member)
+		{
+			return IsNotNull(member);
+		}
+
+		public IQueryBuilder<T> FieldDoesNotExist(Expression<Func<T, object>> member)
+		{
+			return IsNull(member);
+		}
+
+
 		public abstract IQueryBuilder<T> Take(int limit);
 
 		public abstract IQueryBuilder<T> Skip(int amount);
