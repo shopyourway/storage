@@ -33,10 +33,11 @@
 		<PackageReference Include="OhioBox.Moranbernate" Version="5.1.16" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\OhioBox.Storage\OhioBox.Storage.csproj" />
+		<PackageReference Include="OhioBox.Storage" Version="3.0.5-rc" />
 	</ItemGroup>
 	<!--
 	<ItemGroup Condition="'$(Configuration)' != 'Debug'">
-		<PackageReference Include="OhioBox.Storage" Version="3.0.2-rc" />
-	</ItemGroup>-->
+		<ProjectReference Include="..\OhioBox.Storage\OhioBox.Storage.csproj" />
+	</ItemGroup>
+	-->
 </Project>
