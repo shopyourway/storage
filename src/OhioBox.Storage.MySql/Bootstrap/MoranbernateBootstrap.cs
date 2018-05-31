@@ -11,15 +11,14 @@ namespace OhioBox.Storage.MySql.Bootstrap
 			perfLoggerType = perfLoggerType ?? typeof(DefaultPerfLogger<>);
 
 			var perfLoggerInterfaceType = typeof(IPerfLogger<>);
-			if (!perfLoggerInterfaceType.IsAssignableFrom(perfLoggerType))
+			if (!perfLoggerInterfaceType.GetTypeInfo().IsAssignableFrom(perfLoggerType))
 				throw new StorageRegistrationException(perfLoggerInterfaceType, perfLoggerType);
 
 			return new[]
 			{
 				new Registration(typeof(IAggregatedQueryRunner<>), typeof(AggregatedQueryRunner<>)),
 				new Registration(perfLoggerInterfaceType, perfLoggerType),
-				new Registration(typeof(IMetricsReporter), typeof(TMetricsReporter)), 
-				new Registration(typeof(ISqlConnectionFactory), typeof(SqlConnectionFactory))
+				new Registration(typeof(IMetricsReporter), typeof(TMetricsReporter))
 			};
 		}
 	}

@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace OhioBox.Storage.MySql
 {
-	internal class SqlConnectionFactory : ISqlConnectionFactory
+	public class SqlConnectionFactory : ISqlConnectionFactory
 	{
 		private readonly IMetricsReporter _metricsReporter;
 		private readonly Dictionary<Type, ISqlConnectionProvider> _typeToConnection = new Dictionary<Type, ISqlConnectionProvider>();
-		private readonly List<ISqlConnectionProvider> _providers = new List<ISqlConnectionProvider>();		
+		private readonly List<ISqlConnectionProvider> _providers = new List<ISqlConnectionProvider>();
 
 		public IEnumerable<ISqlConnectionProvider> Providers => _providers;
 
