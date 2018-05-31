@@ -10,7 +10,7 @@ namespace OhioBox.Storage.MySql
 		IDbConnection ProvideConnection();
 	}
 
-	internal class SqlConnectionProvider : ISqlConnectionProvider
+	public class SqlConnectionProvider : ISqlConnectionProvider
 	{
 		private readonly string _connectionString;
 		private readonly IMetricsReporter _metricsReporter;
