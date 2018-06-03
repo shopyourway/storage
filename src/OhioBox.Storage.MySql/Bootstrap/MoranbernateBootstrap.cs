@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using OhioBox.Storage.MySql.Moranbernate;
 
@@ -11,7 +12,10 @@ namespace OhioBox.Storage.MySql.Bootstrap
 			perfLoggerType = perfLoggerType ?? typeof(DefaultPerfLogger<>);
 
 			var perfLoggerInterfaceType = typeof(IPerfLogger<>);
-			if (!perfLoggerInterfaceType.GetTypeInfo().IsAssignableFrom(perfLoggerType))
+			if (!perfLoggerType.GetTypeInfo().GetInterfaces()
+				.Any(x => 
+					x.GetTypeInfo().IsGenericType && 
+					x.GetTypeInfo().GetGenericTypeDefinition() == perfLoggerInterfaceType))
 				throw new StorageRegistrationException(perfLoggerInterfaceType, perfLoggerType);
 
 			return new[]
