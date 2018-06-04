@@ -12,11 +12,11 @@ namespace OhioBox.Storage
 
 		IQueryBuilder<T> In<TValue>(Expression<Func<T, TValue>> member, ICollection<TValue> value);
 
-		IQueryBuilder<T> InAny<TValue>(Expression<Func<T, IList<TValue>>> member, ICollection<TValue> value);
+		IQueryBuilder<T> InAny<TValue>(Expression<Func<T, IEnumerable<TValue>>> member, IEnumerable<TValue> value);
 
 		IQueryBuilder<T> NotIn<TValue>(Expression<Func<T, TValue>> member, ICollection<TValue> value);
 
-		IQueryBuilder<T> NotInAny<TValue>(Expression<Func<T, IList<TValue>>> member, ICollection<TValue> value);
+		IQueryBuilder<T> NotInAny<TValue>(Expression<Func<T, IEnumerable<TValue>>> member, IEnumerable<TValue> value);
 
 		IQueryBuilder<T> GreaterOrEqual<TValue>(Expression<Func<T, TValue>> member, TValue value);
 
