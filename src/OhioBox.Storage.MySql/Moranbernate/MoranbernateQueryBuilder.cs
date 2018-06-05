@@ -33,7 +33,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return this;
 		}
 
-		public IQueryBuilder<T> InAny<TValue>(Expression<Func<T, IList<TValue>>> member, ICollection<TValue> value)
+		public IQueryBuilder<T> InAny<TValue>(Expression<Func<T, IEnumerable<TValue>>> member, IEnumerable<TValue> value)
 		{
 			// No support for collections in mornabernate as of now
 			return this;
@@ -58,7 +58,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return this;
 		}
 
-		public IQueryBuilder<T> NotInAny<TValue>(Expression<Func<T, IList<TValue>>> member, ICollection<TValue> value)
+		public IQueryBuilder<T> NotInAny<TValue>(Expression<Func<T, IEnumerable<TValue>>> member, IEnumerable<TValue> value)
 		{
 			// No support for collections in mornabernate as of now
 			return this;
