@@ -100,25 +100,25 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			return this;
 		}
 
-		public IQueryBuilder<T> StartWith(Expression<Func<T, string>> member, string value)
+		public IQueryBuilder<T> StartWith(Expression<Func<T,object>> member, string value)
 		{
 			AddPredicate(w => w.StartWith(member, value));
 			return this;
 		}
 
-		public IQueryBuilder<T> Contains(Expression<Func<T, string>> member, string value)
+		public IQueryBuilder<T> Contains(Expression<Func<T, object>> member, string value)
 		{
 			AddPredicate(w => w.Contains(member, value));
 			return this;
 		}
 
-		public IQueryBuilder<T> RegexMatch(Expression<Func<T, string>> member, string pattern)
+		public IQueryBuilder<T> RegexMatch(Expression<Func<T, object>> member, string pattern)
 		{
 			AddPredicate(w => w.RegexMatch(member, pattern));
 			return this;
 		}
 
-		public IQueryBuilder<T> RegexMatch(Expression<Func<T, IEnumerable<string>>> member, string pattern)
+		public IQueryBuilder<T> RegexMatch(Expression<Func<T, IEnumerable<object>>> member, string pattern)
 		{
 			// No collection support in Moranbernate at this time
 			return this;

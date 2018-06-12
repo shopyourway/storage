@@ -27,14 +27,13 @@
 		<PackageReference Include="System.Collections" Version="4.3.0" />
 		<PackageReference Include="System.Runtime" Version="4.3.0" />
 		<PackageReference Include="MySql.Data" Version="6.10.6" />
-		<PackageReference Include="OhioBox.Moranbernate" Version="5.1.16" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<PackageReference Include="MySql.Data" Version="6.10.6" />
-		<PackageReference Include="OhioBox.Moranbernate" Version="5.1.16" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="OhioBox.Storage" Version="3.0.7-rc" />
+		<PackageReference Include="OhioBox.Moranbernate" Version="5.2.17" />
+		<PackageReference Include="OhioBox.Storage" Version="3.0.8-rc" />
 	</ItemGroup>
 	<!--
 	<ItemGroup Condition="'$(Configuration)' != 'Debug'">
