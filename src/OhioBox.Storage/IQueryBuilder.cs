@@ -42,13 +42,13 @@ namespace OhioBox.Storage
 
 		IQueryBuilder<T> Select(params Expression<Func<T, object>>[] fields);
 
-		IQueryBuilder<T> StartWith(Expression<Func<T, string>> member, string value);
+		IQueryBuilder<T> StartWith(Expression<Func<T, object>> member, string value);
+		
+		IQueryBuilder<T> Contains(Expression<Func<T, object>> member, string value);
 
-		IQueryBuilder<T> Contains(Expression<Func<T, string>> member, string value);
+		IQueryBuilder<T> RegexMatch(Expression<Func<T, object>> member, string pattern);
 
-		IQueryBuilder<T> RegexMatch(Expression<Func<T, string>> member, string pattern);
-
-		IQueryBuilder<T> RegexMatch(Expression<Func<T, IEnumerable<string>>> member, string pattern);
+		IQueryBuilder<T> RegexMatch(Expression<Func<T, IEnumerable<object>>> member, string pattern);
 			
 		IQueryBuilder<T> FieldExists(Expression<Func<T, object>> member);
 
