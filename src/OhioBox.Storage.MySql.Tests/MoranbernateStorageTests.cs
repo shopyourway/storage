@@ -215,23 +215,6 @@ namespace OhioBox.Storage.MySql.Tests
 		}
 
 		[Test]
-		public void UpdateByQuery_WhenFieldIsDecremented_DecrementFieldBySpecifiedValue()
-		{
-			AddUser(1L, "Doron", visitCount: 1);
-			AddUser(2L, "Shani", visitCount: 2);
-			AddUser(3L, "Dror", visitCount: 3);
-
-			var result = _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST").Decrement(x => x.VisitCount, 1));
-
-			Assert.That(result, Is.EqualTo(2));
-
-			var users = _target.Query(q => { });
-			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.VisitCount == 1));
-			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "TEST" && x.VisitCount == 1));
-			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 3L && x.Name == "TEST" && x.VisitCount == 2));
-		}
-
-		[Test]
 		public void UpdateByQuery_WhenAddToSetIsUsed_DoNothingCauseThereIsNoCollectionSupportInMoranbernate()
 		{
 			AddUser(1L, "Doron", visitCount: 1);
