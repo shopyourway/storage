@@ -32,7 +32,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="OhioBox.Moranbernate" Version="5.2.18" />
-		<PackageReference Include="OhioBox.Storage" Version="3.0.7-rc" />
+		<PackageReference Include="OhioBox.Storage" Version="3.0.8-rc" />
 	</ItemGroup>
 	<!--
 	<ItemGroup Condition="'$(Configuration)' != 'Debug'">
