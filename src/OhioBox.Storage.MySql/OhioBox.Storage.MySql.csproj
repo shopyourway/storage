@@ -31,12 +31,8 @@
 		<PackageReference Include="MySql.Data" Version="6.10.6" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="OhioBox.Moranbernate" Version="5.2.19" />
-		<PackageReference Include="OhioBox.Storage" Version="3.0.9-rc" />
-	</ItemGroup>
-	<!--
-	<ItemGroup Condition="'$(Configuration)' != 'Debug'">
 		<ProjectReference Include="..\OhioBox.Storage\OhioBox.Storage.csproj" />
+		<PackageReference Include="OhioBox.Moranbernate" Version="5.2.19" />
+		<!--<PackageReference Include="OhioBox.Storage" Version="3.0.9-rc" />-->
 	</ItemGroup>
-	-->
 </Project>
