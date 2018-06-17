@@ -283,6 +283,23 @@ namespace OhioBox.Storage.MySql.Tests
 			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 3L));
 		}
 
+		[Test]
+		public void DeleteByQuery_WhenNoQueryIsGiven_ThrowExceptionAndDoNotDelete()
+		{
+			AddUser(1L, "Doron", new DateTime(2018, 5, 10));
+			AddUser(2L, "Shani", new DateTime(2018, 5, 11));
+			AddUser(3L, "Dror", new DateTime(2018, 5, 12));
+
+			Assert.Throws<DeleteByQueryException>(() => _target.DeleteByQuery(q => { }));
+
+			var allUsers = _target.Query(q => { });
+
+			Assert.That(allUsers, Has.Count.EqualTo(3));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 1L));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 2L));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 3L));
+		}
+
 		private void AddUser(long id, string name, DateTime? updateDate = null, int? visitCount = null, string[] permissions = null)
 		{
 			_target.Add(new UserDto { Id = id, Name = name, UpdateDate = updateDate, VisitCount = visitCount, Permissions = permissions});

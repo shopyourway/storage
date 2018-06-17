@@ -4,9 +4,10 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using OhioBox.Moranbernate.Generators;
 using OhioBox.Moranbernate.Querying;
 using OhioBox.Moranbernate.Utils;
+using OhioBox.Storage.Exceptions;
+using UpdateByQueryException = OhioBox.Moranbernate.Generators.UpdateByQueryException;
 
 namespace OhioBox.Storage.MySql.Moranbernate
 {
@@ -141,7 +142,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 						{
 							query(new MoranbernateRestrictions<T>(restrictable));
 							if (restrictable.NoRestrictions())
-								throw new Exceptions.UpdateByQueryException("Can not update without a WHERE clause. Please add a non empty query");
+								throw new Exceptions.UpdateByQueryException("Can not update without a WHERE clause. Please provide a non empty query");
 						});
 
 					return (rows, rows);
@@ -158,7 +159,12 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		{
 			return ExecuteQuery(conn =>
 				{
-					var rows = conn.DeleteByQuery<T>(restrictable => query(new MoranbernateRestrictions<T>(restrictable)));
+					var rows = conn.DeleteByQuery<T>(restrictable =>
+					{
+						query(new MoranbernateRestrictions<T>(restrictable));
+						if (restrictable.NoRestrictions())
+							throw new DeleteByQueryException("Can not delete without WHERE clause. Please provide a non empty query");
+					});
 					return (rows, rows);
 				}, 
 				"DeleteByQuery");
