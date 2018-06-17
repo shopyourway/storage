@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using OhioBox.Storage.Exceptions;
 using OhioBox.Storage.MySql.Bootstrap;
 using OhioBox.Storage.MySql.Moranbernate;
 using OhioBox.Storage.MySql.Tests.Bootstrap;
@@ -218,6 +219,32 @@ namespace OhioBox.Storage.MySql.Tests
 			AddUser(2L, "Shani", visitCount: 2);
 
 			Assert.DoesNotThrow(() => _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => u.Set(x => x.Name, "TEST").RemoveFromSet(x => x.Permissions, "read")));
+		}
+
+		[Test]
+		public void UpdateByQuery_WhenNoUpdateStatementIsGiven_ThrowExceptionAndDoNotUpdate()
+		{
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+
+			Assert.Throws<UpdateByQueryException>(() => _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => {}));
+
+			var users = _target.Query(q => { });
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.VisitCount == 1));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "Shani" && x.VisitCount == 2));
+		}
+
+		[Test]
+		public void UpdateByQuery_WhenNoQueryIsGiven_ThrowExceptionAndDoNotUpdate()
+		{
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+
+			Assert.Throws<UpdateByQueryException>(() => _target.UpdateByQuery(q => { }, u => u.Set(x => x.Name, "TEST")));
+
+			var users = _target.Query(q => { });
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.VisitCount == 1));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "Shani" && x.VisitCount == 2));
 		}
 
 		[Test]

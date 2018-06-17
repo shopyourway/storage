@@ -7,5 +7,9 @@ namespace OhioBox.Storage.Exceptions
 		public UpdateByQueryException(string message) : base($"Unable to update by query: {message}")
 		{
 		}
+
+		public UpdateByQueryException(Exception ex) : base("Unable to update by query", ex)
+		{
+		}
 	}
 }

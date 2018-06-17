@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using OhioBox.Moranbernate.Generators;
 using OhioBox.Moranbernate.Querying;
 using OhioBox.Moranbernate.Utils;
 
@@ -132,11 +133,24 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		{
 			return ExecuteQuery(conn =>
 			{
-				var rows = conn.UpdateByQuery<T>(
-					builder => update(new MoranbernateUpdateBuilder<T>(builder)),
-					restrictable => query(new MoranbernateRestrictions<T>(restrictable)));
+				try
+				{
+					var rows = conn.UpdateByQuery<T>(
+						builder => update(new MoranbernateUpdateBuilder<T>(builder)),
+						restrictable =>
+						{
+							query(new MoranbernateRestrictions<T>(restrictable));
+							if (restrictable.NoRestrictions())
+								throw new Exceptions.UpdateByQueryException("Can not update without a WHERE clause. Please add a non empty query");
+						});
 
-				return (rows, rows);
+					return (rows, rows);
+				}
+				catch (UpdateByQueryException e)
+				{
+					throw new Exceptions.UpdateByQueryException(e);
+				}
+				
 			}, "UpdateByQuery");
 		}
 
