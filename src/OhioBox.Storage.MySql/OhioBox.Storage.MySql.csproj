@@ -19,20 +19,15 @@
 		<Reference Include="System" />
 		<Reference Include="System.Core" />
 		<Reference Include="System.Data" />
-		<PackageReference Include="MySql.Data" Version="6.10.6" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.6'">
 		<PackageReference Include="System.ValueTuple" Version="4.3.0" />
 		<PackageReference Include="System.Collections" Version="4.3.0" />
 		<PackageReference Include="System.Runtime" Version="4.3.0" />
-		<PackageReference Include="MySql.Data" Version="6.10.6" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="MySql.Data" Version="6.10.6" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\OhioBox.Storage\OhioBox.Storage.csproj" />
+		<PackageReference Include="MySql.Data" Version="6.10.6" />
 		<PackageReference Include="OhioBox.Moranbernate" Version="5.2.19" />
-		<!--<PackageReference Include="OhioBox.Storage" Version="3.0.9-rc" />-->
+		<PackageReference Include="OhioBox.Storage" Version="3.0.10-rc" />
 	</ItemGroup>
 </Project>
