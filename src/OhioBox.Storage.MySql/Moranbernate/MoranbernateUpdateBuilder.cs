@@ -7,9 +7,9 @@ namespace OhioBox.Storage.MySql.Moranbernate
 {
 	public class MoranbernateUpdateBuilder<T> : IUpdateBuilder<T>
 	{
-		private readonly IKeyValuePairBuilder<T> _builder;
+		private readonly IUpdateStatementBuilder<T> _builder;
 
-		public MoranbernateUpdateBuilder(IKeyValuePairBuilder<T> builder)
+		public MoranbernateUpdateBuilder(IUpdateStatementBuilder<T> builder)
 		{
 			_builder = builder;
 		}

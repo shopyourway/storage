@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using OhioBox.Storage.Exceptions;
 using OhioBox.Storage.MySql.Bootstrap;
 using OhioBox.Storage.MySql.Moranbernate;
 using OhioBox.Storage.MySql.Tests.Bootstrap;
@@ -221,6 +222,32 @@ namespace OhioBox.Storage.MySql.Tests
 		}
 
 		[Test]
+		public void UpdateByQuery_WhenNoUpdateStatementIsGiven_ThrowExceptionAndDoNotUpdate()
+		{
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+
+			Assert.Throws<UpdateByQueryException>(() => _target.UpdateByQuery(q => q.GreaterOrEqual(x => x.Id, 2), u => {}));
+
+			var users = _target.Query(q => { });
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.VisitCount == 1));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "Shani" && x.VisitCount == 2));
+		}
+
+		[Test]
+		public void UpdateByQuery_WhenNoQueryIsGiven_ThrowExceptionAndDoNotUpdate()
+		{
+			AddUser(1L, "Doron", visitCount: 1);
+			AddUser(2L, "Shani", visitCount: 2);
+
+			Assert.Throws<UpdateByQueryException>(() => _target.UpdateByQuery(q => { }, u => u.Set(x => x.Name, "TEST")));
+
+			var users = _target.Query(q => { });
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 1L && x.Name == "Doron" && x.VisitCount == 1));
+			Assert.That(users, Has.Some.Matches<UserDto>(x => x.Id == 2L && x.Name == "Shani" && x.VisitCount == 2));
+		}
+
+		[Test]
 		public void DeleteByQuery_WhenSomeRowsMatchesQuery_DeleteTheseRows()
 		{
 			AddUser(1L, "Doron", new DateTime(2018, 5, 10));
@@ -247,6 +274,23 @@ namespace OhioBox.Storage.MySql.Tests
 			var result = _target.DeleteByQuery(q => q.LessThan(x => x.UpdateDate, new DateTime(2018, 5, 9)));
 
 			Assert.That(result, Is.EqualTo(0));
+
+			var allUsers = _target.Query(q => { });
+
+			Assert.That(allUsers, Has.Count.EqualTo(3));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 1L));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 2L));
+			Assert.That(allUsers, Has.Some.Matches<UserDto>(x => x.Id == 3L));
+		}
+
+		[Test]
+		public void DeleteByQuery_WhenNoQueryIsGiven_ThrowExceptionAndDoNotDelete()
+		{
+			AddUser(1L, "Doron", new DateTime(2018, 5, 10));
+			AddUser(2L, "Shani", new DateTime(2018, 5, 11));
+			AddUser(3L, "Dror", new DateTime(2018, 5, 12));
+
+			Assert.Throws<DeleteByQueryException>(() => _target.DeleteByQuery(q => { }));
 
 			var allUsers = _target.Query(q => { });
 

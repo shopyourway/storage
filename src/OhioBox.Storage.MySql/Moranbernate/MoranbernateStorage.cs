@@ -6,6 +6,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using OhioBox.Moranbernate.Querying;
 using OhioBox.Moranbernate.Utils;
+using OhioBox.Storage.Exceptions;
+using UpdateByQueryException = OhioBox.Moranbernate.Generators.UpdateByQueryException;
 
 namespace OhioBox.Storage.MySql.Moranbernate
 {
@@ -132,11 +134,24 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		{
 			return ExecuteQuery(conn =>
 			{
-				var rows = conn.UpdateByQuery<T>(
-					builder => update(new MoranbernateUpdateBuilder<T>(builder)),
-					restrictable => query(new MoranbernateRestrictions<T>(restrictable)));
+				try
+				{
+					var rows = conn.UpdateByQuery<T>(
+						builder => update(new MoranbernateUpdateBuilder<T>(builder)),
+						restrictable =>
+						{
+							query(new MoranbernateRestrictions<T>(restrictable));
+							if (restrictable.NoRestrictions())
+								throw new Exceptions.UpdateByQueryException("Can not update without a WHERE clause. Please provide a non empty query");
+						});
 
-				return (rows, rows);
+					return (rows, rows);
+				}
+				catch (UpdateByQueryException e)
+				{
+					throw new Exceptions.UpdateByQueryException(e);
+				}
+				
 			}, "UpdateByQuery");
 		}
 
@@ -144,7 +159,12 @@ namespace OhioBox.Storage.MySql.Moranbernate
 		{
 			return ExecuteQuery(conn =>
 				{
-					var rows = conn.DeleteByQuery<T>(restrictable => query(new MoranbernateRestrictions<T>(restrictable)));
+					var rows = conn.DeleteByQuery<T>(restrictable =>
+					{
+						query(new MoranbernateRestrictions<T>(restrictable));
+						if (restrictable.NoRestrictions())
+							throw new DeleteByQueryException("Can not delete without WHERE clause. Please provide a non empty query");
+					});
 					return (rows, rows);
 				}, 
 				"DeleteByQuery");
