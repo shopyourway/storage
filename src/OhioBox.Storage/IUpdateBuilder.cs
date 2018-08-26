@@ -10,5 +10,6 @@ namespace OhioBox.Storage
 		IUpdateBuilder<T> Increment<TValue>(Expression<Func<T, TValue>> field, TValue value);
 		IUpdateBuilder<T> AddToSet<TValue>(Expression<Func<T, IEnumerable<TValue>>> field, params TValue[] values);
 		IUpdateBuilder<T> RemoveFromSet<TValue>(Expression<Func<T, IEnumerable<TValue>>> field, params TValue[] values);
+		IUpdateBuilder<T> RemoveFromSet<TValue>(Expression<Func<T, IEnumerable<TValue>>> field, Expression<Func<TValue, bool>> criteria);
 	}
 }
