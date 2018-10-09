@@ -195,7 +195,7 @@ namespace OhioBox.Storage.MySql.Moranbernate
 			finally
 			{
 				sw.Stop();
-				_metricsReporter.Report($"{_space}.{metricsKey}", sw.Elapsed.Ticks);
+				_metricsReporter.Report($"{_space}.{metricsKey}", new MetricsReport(sw.Elapsed.Ticks));
 				if (sw.ElapsedMilliseconds > QueryRuntimeThreshold)
 					LogSlowQuery(sw.ElapsedMilliseconds, rows, logMessage?.Invoke());
 			}

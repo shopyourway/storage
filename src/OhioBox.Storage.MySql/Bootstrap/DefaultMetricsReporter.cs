@@ -16,7 +16,7 @@ namespace OhioBox.Storage.MySql.Bootstrap
 			return new EmptyDisposable();
 		}
 
-		public void Report(string key, long runtimeInTicks)
+		public void Report(string key, MetricsReport metric)
 		{}
 	}
 }
